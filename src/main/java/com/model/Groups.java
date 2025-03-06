@@ -21,7 +21,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 @Entity
-//@JsonIgnoreProperties({"members", "messages","admin"})
 public class Groups {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +38,6 @@ public class Groups {
 	        joinColumns = @JoinColumn(name = "groupId"),
 	        inverseJoinColumns = @JoinColumn(name = "userId"))
 	 private List<Users> members;
-
-	/*@OneToMany(mappedBy = "group")
-	private List<Messages> messages;*/
 
 	public Groups(){}
 
@@ -76,13 +72,5 @@ public class Groups {
 	public void setMembers(List<Users> members) {
 		this.members = members;
 	}
-
-//	public List<Messages> getMessages() {
-//		return messages;
-//	}
-//
-//	public void setMessages(List<Messages> messages) {
-//		this.messages = messages;
-//	}
 	 
 }

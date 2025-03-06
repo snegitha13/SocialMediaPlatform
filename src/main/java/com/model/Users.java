@@ -1,16 +1,19 @@
 package com.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,7 +22,7 @@ import jakarta.validation.constraints.Size;
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int userId;
     
     @NotBlank(message="Username is mandatory")
@@ -43,10 +46,10 @@ public class Users {
     private List<Likes> likes;
 
     @OneToMany(mappedBy = "userID1")
-    private List<Friends> friends1;
+    private List<Friends> friends1=new ArrayList<>();
 
     @OneToMany(mappedBy = "userID2")
-    private List<Friends> friends2;
+    private List<Friends> friends2=new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
     private List<Messages> sentMessages;
@@ -65,19 +68,22 @@ public class Users {
         		.map(Friends::getUserID1)).collect(Collectors.toList());
     }
     
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
-//        
-    public Users() {}
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,cascade=CascadeType.ALL)
+    private List<Role> roles;
     
-//	public Role getRole() {
-//		return role;
-//	}
-//
-//
-//	public void setRole(Role role) {
-//		this.role = role;
-//	}
+    
+    public Users() {}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+
 
 
 	public int getUserId() {

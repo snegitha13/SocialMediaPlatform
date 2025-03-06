@@ -15,15 +15,13 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 public class Messages {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private int messageId;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "senderID", nullable = false)
 	private Users sender;
-	
-	@JsonIgnore
+
 	@ManyToOne
 	@JoinColumn(name="receiverId",nullable=false)
 	private Users receiver;
@@ -33,7 +31,7 @@ public class Messages {
 	private Timestamp timestamp;
 	
 	public Messages() {}
-	
+
 	public int getMessageId() {
 		return messageId;
 	}

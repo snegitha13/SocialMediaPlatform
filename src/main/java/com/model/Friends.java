@@ -1,38 +1,40 @@
 package com.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
  
 @Entity
 public class Friends {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private int friendshipId;
-	
-	@JsonIgnore
 	@ManyToOne
+	//@JsonIgnore
+ 
 	@JoinColumn(name = "userID1")
+	//@JsonBackReference
 	private Users userID1;
-	
-	@JsonIgnore
 	@ManyToOne
+	//@JsonIgnore
 	@JoinColumn(name = "userID2")
+	//@JsonBackReference
 	private Users userID2;
-	
+	//@JsonBackReference
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	public enum Status {
 		pending,accepted;
 		}
 	public Friends() {
+		// TODO Auto-generated constructor stub
 	}
 	public int getFriendshipId() {
 		return friendshipId;
@@ -58,6 +60,11 @@ public class Friends {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
- 
+	@Override
+	public String toString() {
+		return "friends [friendshipId=" + friendshipId + ", userID1=" + userID1 + ", userID2=" + userID2 + ", status="
+				+ status + "]";
+	}
+
  
 }

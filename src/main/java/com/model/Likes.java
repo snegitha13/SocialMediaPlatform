@@ -2,12 +2,9 @@ package com.model;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,16 +12,16 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Likes {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private int likeID;
-	
-	@JsonIgnore
 	@ManyToOne
+	//@JsonIgnore
+	//@JsonBackReference
     @JoinColumn(name = "postID")
 	private Posts post;
-	
-	@JsonIgnore
 	@ManyToOne
+	//@JsonIgnore
+	//@JsonBackReference
     @JoinColumn(name = "userID")
 	private Users user;
 	 @Column(name = "timestamp")
@@ -53,13 +50,12 @@ public class Likes {
 	public Timestamp getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
+	public void setTimestamp(Timestamp sqlDate) {
+		this.timestamp = sqlDate;
 	}
 	@Override
 	public String toString() {
 		return "likes [likeID=" + likeID + ", postID=" + post + ", userID=" + user + ", timestamp=" + timestamp
 				+ "]";
 	}
-
 }

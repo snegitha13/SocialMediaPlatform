@@ -1,9 +1,9 @@
 package com.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,58 +13,42 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.model.Likes;
 import com.model.Posts;
 import com.service.LikeService;
 import com.service.PostService;
  
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/api")
 public class PostController {
 @Autowired 
 private PostService postService;
  
 @Autowired
 LikeService likeService;
- 
- 
-@GetMapping("/{id}")
-public ResponseEntity<Posts> getPostById(@PathVariable("id") int id){
-	Posts post=postService.getPostById(id);
-	if(!(post==null)) {
-		return new ResponseEntity<>(post,HttpStatus.OK);
-	}
-	else {
-		throw new RuntimeException("Validation failed");
-	}
- 
+
+@PostMapping("/post")
+public ResponseEntity<Posts> createPost(@RequestBody Posts post) {
+    return postService.createPost(post);
 }
-@DeleteMapping("/delete/{id}")
-public ResponseEntity<?> deletePostById(@PathVariable int id){
-	if(postService.deletePostById(id)) {
-		return new ResponseEntity<String>("Deletion success",HttpStatus.OK);
-	}
-	else {
-		throw new RuntimeException("Deletion is failed");
-	}
+
+@GetMapping("/post/{postId}")
+public ResponseEntity<Optional<Posts>> getPostById(@PathVariable int postId) {
+    return postService.getPostById(postId);
 }
-@PostMapping
-public ResponseEntity<?> createPost(@RequestBody Posts post){
-	if(postService.createPost(post)) {
-		return new ResponseEntity<String>("creation success",HttpStatus.OK);
-	}
-	else {
-		throw new RuntimeException("Deletion is failed");
-	}
+
+@PutMapping("/post/update/{postId}")
+public ResponseEntity<Posts> updatePost(@PathVariable int postId, @RequestBody Posts postDetails) {
+    return postService.updatePost(postId, postDetails);
 }
-@PutMapping("/update/{postId}")
-public ResponseEntity<?> updatePost(@PathVariable Integer postId, @RequestBody Posts postdetails){
-	if(postService.updatePost(postId, postdetails)) {
-		return new ResponseEntity<String>("Updation success",HttpStatus.OK);
-	}
-	else {
-		throw new RuntimeException("updation is failed");
-	}
+
+@DeleteMapping("/post/delete/{postId}")
+public ResponseEntity<Void> deletePost(@PathVariable int postId) {
+    return postService.deletePost(postId);
 }
+
+
  
 }
  

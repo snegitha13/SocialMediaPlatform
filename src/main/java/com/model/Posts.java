@@ -22,8 +22,6 @@ public class Posts {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int postId;
 	
-	//@JsonIgnore
-	//@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "userId", nullable = false)
 	private Users user;
@@ -36,7 +34,6 @@ public class Posts {
 	private List<Likes> likes;
 	
 	@OneToMany(mappedBy = "postId")
-    //@JsonManagedReference
     private List<Comments> comments;
 	
 	

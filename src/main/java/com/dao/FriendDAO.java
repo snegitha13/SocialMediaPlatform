@@ -17,4 +17,7 @@ public interface FriendDAO extends JpaRepository<Friends,Integer>{
 
     @Query("SELECT f FROM Friends f WHERE f.userID1.userId = :userId OR f.userID2.userId = :userId")
     List<Friends> findFriendsByUserId(@Param("userId") int userId);
+    
+   @Query("SELECT f FROM Friends f WHERE f.userID1.userId = :userId OR f.userID2.userId = :userId")
+   List<Friends> findAllByUserID1_UserIdOrUserID2_UserId(@Param("userId") int userId);
 }

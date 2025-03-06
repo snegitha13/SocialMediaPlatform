@@ -11,19 +11,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+
 @Entity
+
 public class Notifications {
+ 
 	@Id
+ 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+ 
 	private int NotificationId;
-	
-	@JsonIgnore
+ 
 	@ManyToOne
+ 
 	@JoinColumn(name="UserId",nullable=false)
+ 
 	private Users user;
-	
-	@NotBlank(message = "Content text is mandatory")
+ 
 	private String Content_Text;
+ 
 	private Date TimeStamp;
 	private boolean isRead;
 	public int getNotificationId() {
@@ -62,8 +68,5 @@ public class Notifications {
 				+ ", TimeStamp=" + TimeStamp + "]";
 	}
 	public Notifications() {
-	}
-	
-
- 
+	} 
 }

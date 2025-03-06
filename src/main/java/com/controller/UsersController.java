@@ -95,11 +95,10 @@ public class UsersController {
     public ResponseEntity<String> sendMessage(@PathVariable int userId, @PathVariable int otherUserId, @RequestBody Messages message) {
         return service.sendMessage(userId, otherUserId, message);
     }
-
+    
     @GetMapping("/{userId}/posts/likes")
     public ResponseEntity<List<Likes>> getLikesByUserPosts(@PathVariable int userId) {
-        // Implement logic to get likes on user's posts
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return service.getLikesByUserPosts(userId);
     }
 
     @GetMapping("/{userId}/likes")
