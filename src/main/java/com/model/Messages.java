@@ -19,14 +19,10 @@ public class Messages {
 	@GeneratedValue
 	private int messageId;
 	
-	@JsonIgnore
-	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name = "senderID", nullable = false)
 	private Users sender;
 
-	@JsonIgnore
-	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name="receiverId",nullable=false)
 	private Users receiver;

@@ -1,5 +1,7 @@
 package com.service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -197,6 +199,7 @@ public class UsersService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + otherUserId));
         message.setSender(sender);
         message.setReceiver(receiver);
+        message.setTimestamp(Timestamp.from(Instant.now()));
         messageDAO.save(message);
         return new ResponseEntity<>("Message Sent", HttpStatus.ACCEPTED);
     }
@@ -257,5 +260,4 @@ public class UsersService {
         return new ResponseEntity<>(friendsGroups, HttpStatus.OK);
     }
     
-
 }

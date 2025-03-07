@@ -115,7 +115,7 @@ class PostServiceTest {
         when(postDAO.findById(1)).thenReturn(Optional.of(post));
         doNothing().when(postDAO).delete(post);
 
-        ResponseEntity<Void> response = postService.deletePost(1);
+        ResponseEntity<String> response = postService.deletePost(1);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }

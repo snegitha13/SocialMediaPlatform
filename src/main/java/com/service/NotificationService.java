@@ -1,5 +1,6 @@
 package com.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class NotificationService {
         Notifications notification = notificationDAO.findById(notificationId).orElse(null);
         if (notification != null) {
             notification.setRead(true);
+            java.sql.Date sqlDate = new java.sql.Date(new Date().getTime());
+           notification.setTimeStamp(sqlDate);
             return notificationDAO.save(notification);
         } else {
             throw new RuntimeException("Notification not found for the given ID");

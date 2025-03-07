@@ -67,7 +67,7 @@ public class PostControllerTest {
     public void testDeletePost() {
         when(postService.deletePost(1)).thenAnswer(invocation -> new ResponseEntity<>(HttpStatus.OK));
  
-        ResponseEntity<Void> response = postController.deletePost(1);
+        ResponseEntity<String> response = postController.deletePost(1);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

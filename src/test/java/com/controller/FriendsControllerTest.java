@@ -76,12 +76,20 @@ public class FriendsControllerTest {
 	 
 	    @Test
 	    public void testSendMessage() {
-	        doReturn(new ResponseEntity<>("Message sent successfully", HttpStatus.OK)).when(friendsService).sendMessage(1, "Hello");
-	 
-	        
-	        ResponseEntity<String> response = friendsController.sendMessage(1, "Hello");
+	        // Create a Messages object with the message text
+	        Messages message = new Messages();
+	        message.setMessage_text("Hello");
+ 
+	        // Mock the friendsService to return the expected response
+	        doReturn(new ResponseEntity<>("Message sent successfully", HttpStatus.OK))
+	            .when(friendsService).sendMessage(1, "Hello");
+ 
+	        // Call the sendMessage method with the appropriate parameters
+	        ResponseEntity<String> response = friendsController.sendMessage(1, message);
+ 
+	        // Verify the response
 	        assertNotNull(response);
 	        assertEquals(HttpStatus.OK, response.getStatusCode());
 	        assertEquals("Message sent successfully", response.getBody());
-	    }
+	    } 
 	}

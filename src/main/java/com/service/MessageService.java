@@ -61,7 +61,7 @@ public ResponseEntity<?> updateMessage(Integer id, Messages messageDetails) {
     message.setSender(messageDetails.getSender());
     message.setReceiver(messageDetails.getReceiver());
     message.setMessage_text(messageDetails.getMessage_text());
-    message.setTimestamp(messageDetails.getTimestamp());
+    message.setTimestamp(Timestamp.from(Instant.now()));
  
     messagesDao.save(message);
  

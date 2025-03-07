@@ -42,9 +42,10 @@ public class FriendsController {
         List<Messages> messages = friendsService.getMessages(friendshipId);
         return ResponseEntity.ok(messages);
     }
- 
+    
     @PostMapping("friends/{friendshipId}/messages/send")
-    public ResponseEntity<String> sendMessage(@PathVariable int friendshipId, @RequestBody String messageText) {
-        return friendsService.sendMessage(friendshipId, messageText);
+    public ResponseEntity<String> sendMessage(@PathVariable int friendshipId, @RequestBody Messages messageText) {
+        System.out.println(messageText);
+    	return friendsService.sendMessage(friendshipId, messageText.getMessage_text());
     }
 }

@@ -1,6 +1,7 @@
 package com.service;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
  
@@ -41,15 +42,16 @@ public class PostService {
         Posts post = postDAO.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found for this id :: " + postId));
         post.setText(postDetails.getText());
+        post.setTimestamp(Timestamp.from(Instant.now()));
         Posts updatedPost = postDAO.save(post);
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> deletePost(int postId) {
+    public ResponseEntity<String> deletePost(int postId) {
         Posts post = postDAO.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found for this id :: " + postId));
         postDAO.delete(post);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Post deleted",HttpStatus.NO_CONTENT);
     }
 
    

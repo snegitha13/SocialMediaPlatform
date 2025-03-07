@@ -23,8 +23,7 @@ public class Posts {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int postId;
 	
-	@JsonIgnore
-	@JsonProperty
+
 	@ManyToOne
 	@JoinColumn(name = "userId", nullable = false)
 	private Users user;

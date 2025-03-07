@@ -44,7 +44,7 @@ public ResponseEntity<Posts> updatePost(@PathVariable int postId, @RequestBody P
 }
 
 @DeleteMapping("/post/delete/{postId}")
-public ResponseEntity<Void> deletePost(@PathVariable int postId) {
+public ResponseEntity<String> deletePost(@PathVariable int postId) {
     return postService.deletePost(postId);
 }
 

@@ -30,14 +30,11 @@ public class Groups {
 	@NotBlank(message = "Group name is mandatory")
 	private String groupName;
 	
-	@JsonIgnore
-	@JsonProperty
+
 	@ManyToOne
 	@JoinColumn(name = "adminID", nullable = false)
 	private Users admin;
 
-	@JsonIgnore
-	@JsonProperty
 	@ManyToMany
 	@JoinTable( name = "group_members",
 	        joinColumns = @JoinColumn(name = "groupId"),
