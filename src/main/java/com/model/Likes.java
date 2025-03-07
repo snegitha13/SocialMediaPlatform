@@ -2,6 +2,9 @@ package com.model;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,17 +17,19 @@ public class Likes {
 	@Id
 	@GeneratedValue
 	private int likeID;
+	
+	@JsonIgnore
+	@JsonProperty
 	@ManyToOne
-	//@JsonIgnore
-	//@JsonBackReference
     @JoinColumn(name = "postID")
 	private Posts post;
+	
+	@JsonIgnore
+	@JsonProperty
 	@ManyToOne
-	//@JsonIgnore
-	//@JsonBackReference
     @JoinColumn(name = "userID")
 	private Users user;
-	 @Column(name = "timestamp")
+	@Column(name = "timestamp")
 	private Timestamp timestamp;
 	public Likes() {
 		// TODO Auto-generated constructor stub

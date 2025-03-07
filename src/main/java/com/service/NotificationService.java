@@ -13,18 +13,6 @@ public class NotificationService {
 	@Autowired
     private NotificationDAO notificationDAO;
 
-//    public Notifications markNotificationAsRead(int notificationId) {
-//        Notifications notification = notificationDAO.findById(notificationId).orElse(null);
-//        if (notification != null) {
-//            notification.setRead(true);
-//            return notificationDAO.save(notification);
-//        }
-//        return null;
-//    }
-//
-//    public void deleteNotification(int notificationId) {
-//        notificationDAO.deleteById(notificationId);
-//    }
 	public Notifications markNotificationAsRead(int notificationId) throws RuntimeException {
         Notifications notification = notificationDAO.findById(notificationId).orElse(null);
         if (notification != null) {

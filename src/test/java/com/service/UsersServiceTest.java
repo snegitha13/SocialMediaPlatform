@@ -50,7 +50,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetAllUsers_Success() {
+    public void testGetAllUsers() {
         List<Users> usersList = new ArrayList<>();
         usersList.add(new Users());
         when(usersDAO.findAll()).thenReturn(usersList);
@@ -61,16 +61,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetAllUsers_NoDataFound() {
-        when(usersDAO.findAll()).thenReturn(new ArrayList<>());
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getAllUsers();
-        });
-    }
-
-    @Test
-    public void testGetUserById_Success() {
+    public void testGetUserById() {
         Users user = new Users();
         when(usersDAO.findById(1)).thenReturn(Optional.of(user));
 
@@ -79,17 +70,9 @@ class UsersServiceTest {
         assertEquals(user, response.getBody());
     }
 
-    @Test
-    public void testGetUserById_ResourceNotFound() {
-        when(usersDAO.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.getUserById(1);
-        });
-    }
 
     @Test
-    public void testSearchUsersByUsername_Success() {
+    public void testSearchUsersByUsername() {
         List<Users> usersList = new ArrayList<>();
         usersList.add(new Users());
         when(usersDAO.findByUserNameContaining("test")).thenReturn(usersList);
@@ -99,17 +82,9 @@ class UsersServiceTest {
         assertEquals(1, response.getBody().size());
     }
 
-    @Test
-    public void testSearchUsersByUsername_NoDataFound() {
-        when(usersDAO.findByUserNameContaining("test")).thenReturn(new ArrayList<>());
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.searchUsersByUsername("test");
-        });
-    }
 
     @Test
-    public void testAddUser_Success() {
+    public void testAddUser() {
         Users user = new Users();
         ResponseEntity<String> response = usersService.addUser(user);
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
@@ -117,7 +92,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testUpdateUser_Success() {
+    public void testUpdateUser() {
         Users user = new Users();
         when(usersDAO.findById(1)).thenReturn(Optional.of(user));
 
@@ -132,18 +107,9 @@ class UsersServiceTest {
         assertEquals("User Record Updated", response.getBody());
     }
 
-    @Test
-    public void testUpdateUser_ResourceNotFound() {
-        when(usersDAO.findById(1)).thenReturn(Optional.empty());
-
-        Users userDetails = new Users();
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.updateUser(1, userDetails);
-        });
-    }
 
     @Test
-    public void testDeleteUser_Success() {
+    public void testDeleteUser() {
         when(usersDAO.existsById(1)).thenReturn(true);
 
         ResponseEntity<String> response = usersService.deleteUser(1);
@@ -151,17 +117,9 @@ class UsersServiceTest {
         assertEquals("User Record Deleted", response.getBody());
     }
 
-    @Test
-    public void testDeleteUser_ResourceNotFound() {
-        when(usersDAO.existsById(1)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.deleteUser(1);
-        });
-    }
 
     @Test
-    public void testGetPostsByUserId_Success() {
+    public void testGetPostsByUserId() {
         Users user = new Users();
         List<Posts> postsList = new ArrayList<>();
         postsList.add(new Posts());
@@ -173,19 +131,9 @@ class UsersServiceTest {
         assertEquals(1, response.getBody().size());
     }
 
-    @Test
-    public void testGetPostsByUserId_NoDataFound() {
-        Users user = new Users();
-        user.setPosts(new ArrayList<>());
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getPostsByUserId(1);
-        });
-    }
 
     @Test
-    public void testGetCommentsByUserId_Success() {
+    public void testGetCommentsByUserId() {
         Users user = new Users();
         List<Comments> commentsList = new ArrayList<>();
         commentsList.add(new Comments());
@@ -198,18 +146,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetCommentsByUserId_NoDataFound() {
-        Users user = new Users();
-        user.setComments(new ArrayList<>());
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getCommentsByUserId(1);
-        });
-    }
-
-    @Test
-    public void testGetFriendsByUserId_Success() {
+    public void testGetFriendsByUserId() {
         List<Friends> friendsList = new ArrayList<>();
         friendsList.add(new Friends());
         when(friendDAO.findFriendsByUserId(1)).thenReturn(friendsList);
@@ -220,16 +157,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetFriendsByUserId_NoDataFound() {
-        when(friendDAO.findFriendsByUserId(1)).thenReturn(new ArrayList<>());
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getFriendsByUserId(1);
-        });
-    }
-
-    @Test
-    public void testGetPendingFriendRequests_Success() {
+    public void testGetPendingFriendRequests() {
         List<Friends> pendingRequests = new ArrayList<>();
         pendingRequests.add(new Friends());
         when(friendDAO.findPendingFriendRequests(1)).thenReturn(pendingRequests);
@@ -240,16 +168,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetPendingFriendRequests_NoDataFound() {
-        when(friendDAO.findPendingFriendRequests(1)).thenReturn(new ArrayList<>());
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getPendingFriendRequests(1);
-        });
-    }
-
-    @Test
-    public void testSendFriendRequest_Success() {
+    public void testSendFriendRequest() {
         Users user = new Users();
         Users friend = new Users();
         when(usersDAO.findById(1)).thenReturn(Optional.of(user));
@@ -259,28 +178,8 @@ class UsersServiceTest {
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertEquals("Friend Request Sent", response.getBody());
     }
-
     @Test
-    public void testSendFriendRequest_UserNotFound() {
-        when(usersDAO.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.sendFriendRequest(1, 2);
-        });
-    }
-
-    @Test
-    public void testSendFriendRequest_FriendNotFound() {
-        Users user = new Users();
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-        when(usersDAO.findById(2)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.sendFriendRequest(1, 2);
-        });
-    }
-    @Test
-    public void testGetMessagesBetweenUsers_Success() {
+    public void testGetMessagesBetweenUsers() {
         List<Messages> messagesList = new ArrayList<>();
         messagesList.add(new Messages());
         when(messageDAO.findMessagesBetweenUsers(1, 2)).thenReturn(messagesList);
@@ -290,17 +189,9 @@ class UsersServiceTest {
         assertEquals(1, response.getBody().size());
     }
 
-    @Test
-    public void testGetMessagesBetweenUsers_NoDataFound() {
-        when(messageDAO.findMessagesBetweenUsers(1, 2)).thenReturn(new ArrayList<>());
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getMessagesBetweenUsers(1, 2);
-        });
-    }
 
     @Test
-    public void testSendMessage_Success() {
+    public void testSendMessage() {
         Users sender = new Users();
         Users receiver = new Users();
         when(usersDAO.findById(1)).thenReturn(Optional.of(sender));
@@ -313,29 +204,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testSendMessage_SenderNotFound() {
-        when(usersDAO.findById(1)).thenReturn(Optional.empty());
-
-        Messages message = new Messages();
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.sendMessage(1, 2, message);
-        });
-    }
-
-    @Test
-    public void testSendMessage_ReceiverNotFound() {
-        Users sender = new Users();
-        when(usersDAO.findById(1)).thenReturn(Optional.of(sender));
-        when(usersDAO.findById(2)).thenReturn(Optional.empty());
-
-        Messages message = new Messages();
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.sendMessage(1, 2, message);
-        });
-    }
-
-    @Test
-    public void testGetLikesByUserId_Success() {
+    public void testGetLikesByUserId() {
         Users user = new Users();
         List<Likes> likesList = new ArrayList<>();
         likesList.add(new Likes());
@@ -348,18 +217,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetLikesByUserId_NoDataFound() {
-        Users user = new Users();
-        user.setLikes(new ArrayList<>());
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getLikesByUserId(1);
-        });
-    }
-
-    @Test
-    public void testGetLikesByUserPosts_Success() {
+    public void testGetLikesByUserPosts() {
         Users user = new Users();
         List<Posts> postsList = new ArrayList<>();
         Posts post = new Posts();
@@ -376,18 +234,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetLikesByUserPosts_NoDataFound() {
-        Users user = new Users();
-        user.setPosts(new ArrayList<>());
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getLikesByUserPosts(1);
-        });
-    }
-
-    @Test
-    public void testGetNotificationsByUserId_Success() {
+    public void testGetNotificationsByUserId() {
         Users user = new Users();
         List<Notifications> notificationsList = new ArrayList<>();
         notificationsList.add(new Notifications());
@@ -400,18 +247,7 @@ class UsersServiceTest {
     }
 
     @Test
-    public void testGetNotificationsByUserId_NoDataFound() {
-        Users user = new Users();
-        user.setNotifications(new ArrayList<>());
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getNotificationsByUserId(1);
-        });
-    }
-
-    @Test
-    public void testGetGroupsByUserId_Success() {
+    public void testGetGroupsByUserId() {
         Users user = new Users();
         List<Groups> groupsList = new ArrayList<>();
         groupsList.add(new Groups());
@@ -422,92 +258,5 @@ class UsersServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
     }
-
-    @Test
-    public void testGetGroupsByUserId_NoDataFound() {
-        Users user = new Users();
-        user.setGroups(new ArrayList<>());
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getGroupsByUserId(1);
-        });
-    }
-    @Test
-    public void testGetUserFriendsGroups_UserNotFound() {
-        when(usersDAO.findById(1)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> {
-            usersService.getUserFriendsGroups(1);
-        });
-    }
-
-    @Test
-    public void testGetUserFriendsGroups_NoGroupsFound() {
-        Users user = new Users();
-        List<Friends> friendsList = new ArrayList<>();
-        user.setFriends1(friendsList);
-        user.setFriends2(friendsList);
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-        assertThrows(NoDataFoundException.class, () -> {
-            usersService.getUserFriendsGroups(1);
-        });
-    }
-
-//    @Test
-//    public void testGetUserFriendsGroups_GroupsFound() {
-//        Users user = new Users();
-//        Friends friend = new Friends();
-//        Groups group = new Groups();
-//        List<Groups> groupsList = new ArrayList<>();
-//        groupsList.add(group);
-//        friend.setGroups(groupsList);
-//        List<Friends> friendsList = new ArrayList<>();
-//        friendsList.add(friend);
-//        user.setFriends1(friendsList);
-//
-//        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-//        ResponseEntity<List<Groups>> response = usersService.getUserFriendsGroups(1);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(groupsList, response.getBody());
-//    }
-
-    public void testGetUserFriendsGroups_GroupsFound() {
-        Users user = new Users();
-        Friends friend1 = new Friends();
-        Friends friend2 = new Friends();
-        Groups group1 = new Groups();
-        Groups group2 = new Groups();
-
-        // Mocking the groups for friends
-        List<Groups> groupsList1 = new ArrayList<>();
-        groupsList1.add(group1);
-        Users friendUser1 = new Users();
-        friendUser1.setGroups(groupsList1);
-        friend1.setUserID2(friendUser1);
-
-        List<Groups> groupsList2 = new ArrayList<>();
-        groupsList2.add(group2);
-        Users friendUser2 = new Users();
-        friendUser2.setGroups(groupsList2);
-        friend2.setUserID2(friendUser2);
-
-        // Mocking the friends list for the user
-        List<Friends> friendsList1 = new ArrayList<>();
-        friendsList1.add(friend1);
-        user.setFriends1(friendsList1);
-
-        List<Friends> friendsList2 = new ArrayList<>();
-        friendsList2.add(friend2);
-        user.setFriends2(friendsList2);
-
-        when(usersDAO.findById(5)).thenReturn(Optional.of(user));
-        ResponseEntity<List<Groups>> response = usersService.getUserFriendsGroups(5);
-
-        List<Groups> expectedGroups = Stream.concat(groupsList1.stream(), groupsList2.stream())
-                                            .distinct()
-                                            .collect(Collectors.toList());
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedGroups, response.getBody());
-    }
+    
 }

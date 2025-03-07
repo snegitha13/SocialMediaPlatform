@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +22,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 public class Users {
     @Id
     @GeneratedValue
@@ -36,38 +38,60 @@ public class Users {
 
     private byte[] profilePicture;
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "user")
     private List<Posts> posts;
-
+    
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "user")
     private List<Comments> comments;
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "user")
     private List<Likes> likes;
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "userID1")
     private List<Friends> friends1=new ArrayList<>();
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "userID2")
     private List<Friends> friends2=new ArrayList<>();
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "sender")
     private List<Messages> sentMessages;
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "receiver")
     private List<Messages> receivedMessages;
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "user")
     private List<Notifications> notifications;
 
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "admin")
     private List<Groups> groups;
     
+    @JsonIgnore
+    @JsonProperty
     public List<Users> getFriends() {
         return Stream.concat(friends1.stream().map(Friends::getUserID2), friends2.stream()
         		.map(Friends::getUserID1)).collect(Collectors.toList());
     }
     
+    @JsonIgnore
+    @JsonProperty
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     private List<Role> roles;
     
@@ -82,9 +106,6 @@ public class Users {
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-
-
-
 
 	public int getUserId() {
 		return userId;

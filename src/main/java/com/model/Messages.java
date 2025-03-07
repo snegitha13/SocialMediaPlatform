@@ -3,6 +3,7 @@ package com.model;
 import java.sql.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,10 +19,14 @@ public class Messages {
 	@GeneratedValue
 	private int messageId;
 	
+	@JsonIgnore
+	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name = "senderID", nullable = false)
 	private Users sender;
 
+	@JsonIgnore
+	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name="receiverId",nullable=false)
 	private Users receiver;

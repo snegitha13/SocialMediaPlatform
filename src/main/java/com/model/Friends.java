@@ -2,6 +2,9 @@ package com.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,25 +19,24 @@ public class Friends {
 	@Id
 	@GeneratedValue
 	private int friendshipId;
-	@ManyToOne
-	//@JsonIgnore
- 
+	
+	@JsonIgnore
+	@JsonProperty
+	@ManyToOne 
 	@JoinColumn(name = "userID1")
-	//@JsonBackReference
 	private Users userID1;
+	
+	@JsonIgnore
+	@JsonProperty
 	@ManyToOne
-	//@JsonIgnore
 	@JoinColumn(name = "userID2")
-	//@JsonBackReference
 	private Users userID2;
-	//@JsonBackReference
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	public enum Status {
 		pending,accepted;
 		}
 	public Friends() {
-		// TODO Auto-generated constructor stub
 	}
 	public int getFriendshipId() {
 		return friendshipId;

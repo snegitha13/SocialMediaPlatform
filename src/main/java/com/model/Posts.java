@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +23,8 @@ public class Posts {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int postId;
 	
+	@JsonIgnore
+	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name = "userId", nullable = false)
 	private Users user;
@@ -30,9 +33,13 @@ public class Posts {
 	private String text;
 	private Timestamp timestamp;
 	
+	@JsonIgnore
+	@JsonProperty
 	@OneToMany(mappedBy = "post")
 	private List<Likes> likes;
 	
+	@JsonIgnore
+	@JsonProperty
 	@OneToMany(mappedBy = "postId")
     private List<Comments> comments;
 	

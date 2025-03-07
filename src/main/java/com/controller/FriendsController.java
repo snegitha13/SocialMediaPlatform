@@ -43,7 +43,7 @@ public class FriendsController {
         return ResponseEntity.ok(messages);
     }
  
-    @PostMapping("/{friendshipId}/messages/send")
+    @PostMapping("friends/{friendshipId}/messages/send")
     public ResponseEntity<String> sendMessage(@PathVariable int friendshipId, @RequestBody String messageText) {
         return friendsService.sendMessage(friendshipId, messageText);
     }

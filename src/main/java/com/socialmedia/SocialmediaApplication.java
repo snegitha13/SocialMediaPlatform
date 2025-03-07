@@ -58,7 +58,6 @@ public class SocialmediaApplication {
 		        .authorizeRequests()
 		            .requestMatchers(HttpMethod.POST,"/api/login").permitAll()
 		            
-//		                .requestMatchers(HttpMethod.PUT,"/api/manager/register/*").hasRole("ADMIN")
 		                .requestMatchers("/api/user/register").permitAll()
 		                .requestMatchers("/api/admin/register").permitAll()
 
