@@ -2,7 +2,7 @@ package com.model;
 
 public class AuthenticateUser
 {
-	private String username;
+	private String userName;
 	private String password;
 	private String role;
 	
@@ -10,10 +10,10 @@ public class AuthenticateUser
 	
 	
 	public String getUsername() {
-		return username;
+		return userName;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUsername(String userName) {
+		this.userName = userName;
 	}
 	public String getPassword() {
 		return password;

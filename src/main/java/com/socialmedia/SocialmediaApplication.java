@@ -36,7 +36,6 @@ public class SocialmediaApplication {
 		    provider.setPasswordEncoder(passwordEncoder());
 		    return provider;
 		}
-	 
 		@Bean
 		public CustomUserDetailService userDetailsService() {
 			
@@ -164,11 +163,6 @@ public class SocialmediaApplication {
 		            
 		                
 		        .authenticationManager(new ProviderManager(daoAuthenticationProvider()));
-		        
-		
-		        
 		    return http.build();
-		}
-
-	
+		}	
 }

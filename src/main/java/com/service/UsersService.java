@@ -66,6 +66,7 @@ public class UsersService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating user");
         }
     }
+	
 
     public ResponseEntity<?> registerAdmin(Users user) {
         // Encode the password before saving the user
