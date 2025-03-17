@@ -19,6 +19,7 @@ import com.service.MessageService;
 @RequestMapping("/api/messages")
 @CrossOrigin("*")
 public class MessageController {
+	
 	@Autowired 
 	 private MessageService messageService;
 	@PostMapping
@@ -37,12 +38,12 @@ public class MessageController {
     }
  
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMessage(@PathVariable Integer id, @RequestBody Messages messageDetails) {
+    public ResponseEntity<Messages> updateMessage(@PathVariable Integer id, @RequestBody Messages messageDetails) {
         return messageService.updateMessage(id, messageDetails);
     }
  
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMessage(@PathVariable Integer id) {
+    public ResponseEntity<Messages> deleteMessage(@PathVariable Integer id) {
         return messageService.deleteMessage(id);
     }
 }

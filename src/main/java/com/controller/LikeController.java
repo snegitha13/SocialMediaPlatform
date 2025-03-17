@@ -76,7 +76,7 @@ public class LikeController {
     }
  
     @DeleteMapping("/likes/post/{postId}")
-    public ResponseEntity<String> deleteLikesByPostId(@PathVariable int postId) {
+    public ResponseEntity<Likes> deleteLikesByPostId(@PathVariable int postId) {
         return likeService.deleteLikesByPostId(postId);
     }
  

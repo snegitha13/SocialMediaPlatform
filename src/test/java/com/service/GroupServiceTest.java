@@ -85,78 +85,99 @@ public class GroupServiceTest {
     }
  
     @Test
+    
     public void testCreateGroup_Success() {
-        Groups group = new Groups();
-        Users admin = new Users();
-        admin.setUserId(1);
-        group.setAdmin(admin);
  
+        Groups group = new Groups();
+ 
+        Users admin = new Users();
+ 
+        admin.setUserId(1);
+ 
+        group.setAdmin(admin);
         when(usersDAO.findById(1)).thenReturn(Optional.of(admin));
-        when(groupsDAO.save(group)).thenReturn(group);
  
-        ResponseEntity<String> response = groupsService.createGroup(group);
+        when(groupsDAO.save(group)).thenReturn(group);
+        ResponseEntity<Groups> response = groupsService.createGroup(group);
+ 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Group Created", response.getBody());
-    }
  
+    }
     @Test
+ 
     public void testCreateGroup_AdminNotFound() {
+ 
         Groups group = new Groups();
+ 
         Users admin = new Users();
+ 
         admin.setUserId(1);
+ 
         group.setAdmin(admin);
- 
         when(usersDAO.findById(1)).thenReturn(Optional.empty());
- 
         assertThrows(ResourceNotFoundException.class, () -> {
+ 
             groupsService.createGroup(group);
-        });
-    }
  
+        });
+ 
+    }
     @Test
+ 
     public void testUpdateGroup_Success() {
+ 
         Groups group = new Groups();
-        Groups groupDetails = new Groups();
-        groupDetails.setGroupName("Updated Group");
  
+        Groups groupDetails = new Groups();
+ 
+        groupDetails.setGroupName("Updated Group");
         when(groupsDAO.findById(1)).thenReturn(Optional.of(group));
+ 
         when(groupsDAO.save(group)).thenReturn(group);
+        ResponseEntity<Groups> response = groupsService.updateGroup(1, groupDetails);
  
-        ResponseEntity<String> response = groupsService.updateGroup(1, groupDetails);
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        assertEquals("Group Updated", response.getBody());
-    }
  
+ 
+    }
     @Test
+ 
     public void testUpdateGroup_ResourceNotFound() {
+ 
         Groups groupDetails = new Groups();
+ 
         groupDetails.setGroupName("Updated Group");
- 
         when(groupsDAO.findById(1)).thenReturn(Optional.empty());
- 
         assertThrows(ResourceNotFoundException.class, () -> {
+ 
             groupsService.updateGroup(1, groupDetails);
-        });
-    }
  
+        });
+ 
+    }
     @Test
+ 
     public void testDeleteGroup_Success() {
+ 
         when(groupsDAO.existsById(1)).thenReturn(true);
+        ResponseEntity<Groups> response = groupsService.deleteGroup(1);
  
-        ResponseEntity<String> response = groupsService.deleteGroup(1);
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        assertEquals("Group Deleted", response.getBody());
-    }
  
+    }
     @Test
+ 
     public void testDeleteGroup_ResourceNotFound() {
+ 
         when(groupsDAO.existsById(1)).thenReturn(false);
- 
         assertThrows(ResourceNotFoundException.class, () -> {
-            groupsService.deleteGroup(1);
-        });
-    }
  
+            groupsService.deleteGroup(1);
+ 
+        });
+ 
+    }
+
     @Test
     public void testLeaveGroup_Success() {
         Groups group = new Groups();
@@ -169,9 +190,8 @@ public class GroupServiceTest {
         when(groupsDAO.findById(1)).thenReturn(Optional.of(group));
         when(usersDAO.findById(1)).thenReturn(Optional.of(user));
  
-        ResponseEntity<String> response = groupsService.leaveGroup(1, 1);
+        ResponseEntity<Groups> response = groupsService.leaveGroup(1, 1);
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        assertEquals("User Left Group", response.getBody());
     }
  
     @Test
@@ -258,28 +278,24 @@ public class GroupServiceTest {
             groupsService.getUserGroups(1);
         });
     }
- 
     @Test
-    public void testGetMessagesWithUserAndGroup_Success() {
+    public void getCustomMessages_Success1() {
         Object[] message1 = new Object[]{"Hello", 1, 1};
         Object[] message2 = new Object[]{"Hi", 2, 1};
-        List<Object[]> messagesList = Arrays.asList(message1, message2);
- 
-        when(groupsDAO.getMessagesWithUserAndGroup(1)).thenReturn(messagesList);
- 
-        ResponseEntity<List<Object[]>> response = groupsService.getMessagesWithUserAndGroup(1);
+        List<Object> messagesList = Arrays.asList(message1, message2);
+        when(messagesDAO.getCustomMessages(1)).thenReturn(messagesList);
+        ResponseEntity<List<Object>> response = groupsService.getCustomMessages(1);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
     }
- 
     @Test
     public void testGetMessagesWithUserAndGroup_NoDataFound() {
-        when(groupsDAO.getMessagesWithUserAndGroup(1)).thenReturn(new ArrayList<>());
- 
+        when(messagesDAO.getCustomMessages(1)).thenReturn(new ArrayList<>());
         assertThrows(NoDataFoundException.class, () -> {
-            groupsService.getMessagesWithUserAndGroup(1);
+            groupsService.getCustomMessages(1);
         });
     }
+
     @Test
     public void testSendMessageToGroup_Success() {
         Groups group = new Groups();

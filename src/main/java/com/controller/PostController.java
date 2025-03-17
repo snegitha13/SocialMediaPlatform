@@ -24,33 +24,32 @@ import com.service.PostService;
 @RequestMapping("/api")
 @CrossOrigin("*")
 public class PostController {
-@Autowired 
-private PostService postService;
- 
-@Autowired
-LikeService likeService;
-
-@PostMapping("/post")
-public ResponseEntity<Posts> createPost(@RequestBody Posts post) {
-    return postService.createPost(post);
-}
-
-@GetMapping("/post/{postId}")
-public ResponseEntity<Optional<Posts>> getPostById(@PathVariable int postId) {
-    return postService.getPostById(postId);
-}
-
-@PutMapping("/post/update/{postId}")
-public ResponseEntity<Posts> updatePost(@PathVariable int postId, @RequestBody Posts postDetails) {
-    return postService.updatePost(postId, postDetails);
-}
-
-@DeleteMapping("/post/delete/{postId}")
-public ResponseEntity<String> deletePost(@PathVariable int postId) {
-    return postService.deletePost(postId);
-}
-
-
+	
+	@Autowired 
+	private PostService postService;
+	 
+	@Autowired
+	LikeService likeService;
+	
+	@PostMapping("/post")
+	public ResponseEntity<Posts> createPost(@RequestBody Posts post) {
+	    return postService.createPost(post);
+	}
+	
+	@GetMapping("/post/{postId}")
+	public ResponseEntity<Optional<Posts>> getPostById(@PathVariable int postId) {
+	    return postService.getPostById(postId);
+	}
+	
+	@PutMapping("/post/update/{postId}")
+	public ResponseEntity<Posts> updatePost(@PathVariable int postId, @RequestBody Posts postDetails) {
+	    return postService.updatePost(postId, postDetails);
+	}
+	
+	@DeleteMapping("/post/delete/{postId}")
+	public ResponseEntity<Posts> deletePost(@PathVariable int postId) {
+	    return postService.deletePost(postId);
+	}
  
 }
  

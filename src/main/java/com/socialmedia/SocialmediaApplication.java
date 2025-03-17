@@ -62,12 +62,12 @@ public class SocialmediaApplication {
 
 		                .requestMatchers("/api/admin/login").hasAnyRole("ADMIN")
 		                
-		                .requestMatchers(HttpMethod.GET, "/api/users/all").hasAnyRole("ADMIN")
-		                .requestMatchers(HttpMethod.GET, "/api/users/{userId}").hasAnyRole("ADMIN")
-		                .requestMatchers(HttpMethod.GET, "/api/users/search/{username}").hasAnyRole("ADMIN")
+		                .requestMatchers(HttpMethod.GET, "/api/users/all").hasAnyRole("ADMIN","USER")
+		                .requestMatchers(HttpMethod.GET, "/api/users/{userId}").hasAnyRole("ADMIN","USER")
+		                .requestMatchers(HttpMethod.GET, "/api/users/search/{username}").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.POST, "/api/users").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.PUT, "/api/users/update/{userId}").hasAnyRole("ADMIN", "USER")
-		                .requestMatchers(HttpMethod.DELETE, "/api/users/delete/{userId}").hasAnyRole("ADMIN", "USER")
+//		                .requestMatchers(HttpMethod.DELETE, "/api/users/delete/{userId}").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.GET, "/api/users/{userId}/posts").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.GET, "/api/users/{userId}/posts/comments").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.GET, "/api/users/{userId}/friends").hasAnyRole("ADMIN", "USER")
@@ -93,7 +93,7 @@ public class SocialmediaApplication {
 		                // Friends endpoints
 		                .requestMatchers(HttpMethod.GET, "/api/users/{userId}/friends").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.POST, "/api/users/{userId}/friends/{friendId}").hasAnyRole("ADMIN", "USER")
-		                .requestMatchers(HttpMethod.DELETE, "/api/users/{userId}/friends/{friendId}").hasAnyRole("ADMIN", "USER")
+		                .requestMatchers(HttpMethod.DELETE, "/api/friends/{userId}/{friendshipId}").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.GET, "/api/friends/{friendshipId}/messages").hasAnyRole("ADMIN", "USER")
 		                .requestMatchers(HttpMethod.POST, "/api/friends/{friendshipId}/messages/send").hasAnyRole("ADMIN", "USER")
 		                

@@ -42,9 +42,11 @@ public class JwtFilter extends OncePerRequestFilter {
 	    String header_token = request.getHeader("Authorization");
 	    if (header_token != null && header_token.startsWith("Bearer")) {
 	        String original_token = header_token.substring(7);
+	        System.out.println(original_token);
 	        try {
 	            JwtToken jwtToken = new JwtToken();
 	            if (jwtToken.validate(original_token)) {
+	            	System.out.println("validated");
 	                Claims claims = Jwts.parser()
 	                        .setSigningKey(jwtToken.getSecretKey())
 	                        .parseClaimsJws(original_token)
@@ -67,13 +69,14 @@ public class JwtFilter extends OncePerRequestFilter {
 	        } catch (JwtException | IllegalArgumentException e) {
 	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	            response.setContentType("application/json");
-	            response.getWriter().write("{\"error\": \"Invalid token\"}");
+	            response.getWriter().write("{\"error\": \"Invalid token 1 \"}");
+	            e.printStackTrace();
 	            return;
 	        }
 	    } else {
 	        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	        response.setContentType("application/json");
-	        response.getWriter().write("{\"error\": \"Invalid token\"}");
+	        response.getWriter().write("{\"error\": \"Invalid token 2\"}");
 	    }
 	}
 }

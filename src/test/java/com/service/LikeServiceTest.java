@@ -2,6 +2,7 @@ package com.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
  
@@ -34,7 +36,7 @@ class LikeServiceTest {
     private LikeService likeService;
  
     @Mock
-    private LikeDAO likeDAO;
+    private LikeDAO likesDAO;
  
     @Mock
     private PostDAO postDAO;
@@ -48,245 +50,443 @@ class LikeServiceTest {
     }
  
     @Test
-    public void testAddLike() {
+    void testAddLike() {
+        int postId = 1;
+        int userId = 1;
         Posts post = new Posts();
         Users user = new Users();
         Likes like = new Likes();
         like.setPostID(post);
         like.setUserID(user);
-        like.setTimestamp(new Timestamp(System.currentTimeMillis()));
  
-        when(postDAO.findById(1)).thenReturn(Optional.of(post));
-        when(usersDAO.findById(1)).thenReturn(Optional.of(user));
-        when(likeDAO.save(any(Likes.class))).thenReturn(like);
+        when(postDAO.findById(postId)).thenReturn(Optional.of(post));
+        when(usersDAO.findById(userId)).thenReturn(Optional.of(user));
+        when(likesDAO.save(any(Likes.class))).thenReturn(like);
  
-        ResponseEntity<Likes> response = likeService.addLike(1, 1);
+        ResponseEntity<Likes> response = likeService.addLike(postId, userId);
+ 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(like, response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(post, response.getBody().getPostID());
+        assertEquals(user, response.getBody().getUserID());
     }
  
     @Test
-    public void testGetLikesByPost() {
-        Likes like1 = new Likes();
-        Likes like2 = new Likes();
-        List<Likes> likes = Arrays.asList(like1, like2);
+    void testAddLike_PostOrUserNotFound() {
+        int postId = 1;
+        int userId = 1;
  
-        when(likeDAO.findByPost_PostId(1)).thenReturn(likes);
+        when(postDAO.findById(postId)).thenReturn(Optional.empty());
+        when(usersDAO.findById(userId)).thenReturn(Optional.empty());
  
-        ResponseEntity<List<Likes>> response = likeService.getLikesByPost(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
+        ResponseEntity<Likes> response = likeService.addLike(postId, userId);
+ 
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
  
     @Test
-    public void testRemoveLike() {
+    void testGetLikesByPost() {
+        int postId = 1;
         Likes like = new Likes();
-        when(likeDAO.findById(1)).thenReturn(Optional.of(like));
+        List<Likes> likesList = Arrays.asList(like);
  
-        ResponseEntity<String> response = likeService.removeLike(1);
+        when(likesDAO.findByPost_PostId(postId)).thenReturn(likesList);
+ 
+        ResponseEntity<List<Likes>> response = likeService.getLikesByPost(postId);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+    }
+ 
+    @Test
+    void testRemoveLike() {
+        int likeId = 1;
+        Likes like = new Likes();
+ 
+        when(likesDAO.findById(likeId)).thenReturn(Optional.of(like));
+        doNothing().when(likesDAO).delete(like);
+ 
+        ResponseEntity<String> response = likeService.removeLike(likeId);
+ 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Like removed successfully", response.getBody());
- 
-        verify(likeDAO).delete(like);
     }
  
     @Test
-    public void testGetLikesByUserPosts() {
-        Likes like1 = new Likes();
-        Likes like2 = new Likes();
-        List<Likes> likes = Arrays.asList(like1, like2);
+    void testRemoveLike_NotFound() {
+        int likeId = 1;
  
-        when(likeDAO.findByPost_User_UserId(1)).thenReturn(likes);
+        when(likesDAO.findById(likeId)).thenReturn(Optional.empty());
  
-        ResponseEntity<List<Likes>> response = likeService.getLikesByUserPosts(1);
+        ResponseEntity<String> response = likeService.removeLike(likeId);
+ 
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Like not found", response.getBody());
+    }
+ 
+    @Test
+    void testGetLikesByUserPosts() {
+        int userId = 1;
+        Likes like = new Likes();
+        List<Likes> likesList = Arrays.asList(like);
+ 
+        when(likesDAO.findByPost_User_UserId(userId)).thenReturn(likesList);
+ 
+        ResponseEntity<List<Likes>> response = likeService.getLikesByUserPosts(userId);
+ 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().size());
+        assertEquals(1, response.getBody().size());
     }
  
     @Test
-    public void testGetAllLikes() {
-        Likes like1 = new Likes();
-        Likes like2 = new Likes();
-        List<Likes> likes = Arrays.asList(like1, like2);
+    void testGetAllLikes() {
+        Likes like = new Likes();
+        List<Likes> likesList = Arrays.asList(like);
  
-        when(likeDAO.findAll()).thenReturn(likes);
+        when(likesDAO.findAll()).thenReturn(likesList);
  
         ResponseEntity<?> response = likeService.getAllLikes();
+ 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, ((List<Likes>) response.getBody()).size());
+        assertEquals(1, ((List<Likes>) response.getBody()).size());
     }
  
     @Test
-    public void testGetLikeById() {
-        Likes like = new Likes();
-        when(likeDAO.findById(1)).thenReturn(Optional.of(like));
+    void testGetAllLikes_NotFound() {
+        when(likesDAO.findAll()).thenReturn(Collections.emptyList());
  
-        ResponseEntity<?> response = likeService.getLikeById(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(like, response.getBody());
-    }
- 
-    @Test
-    public void testGetLikesByPostId() {
-        Likes like1 = new Likes();
-        Likes like2 = new Likes();
-        List<Likes> likes = Arrays.asList(like1, like2);
- 
-        when(likeDAO.findByPostId(1)).thenReturn(likes);
- 
-        ResponseEntity<?> response = likeService.getLikesByPostId(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, ((List<Likes>) response.getBody()).size());
-    }
- 
-    @Test
-    public void testGetLikesByUserId() {
-        Likes like1 = new Likes();
-        Likes like2 = new Likes();
-        List<Likes> likes = Arrays.asList(like1, like2);
- 
-        when(likeDAO.findByUserId(1)).thenReturn(likes);
- 
-        ResponseEntity<?> response = likeService.getLikesByUserId(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, ((List<Likes>) response.getBody()).size());
-    }
- 
-    @Test
-    public void testAddLikeWithRequestBody() {
-        Likes like = new Likes();
-        when(likeDAO.save(any(Likes.class))).thenReturn(like);
- 
-        ResponseEntity<?> response = likeService.addLike(like);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Like added", response.getBody());
-    }
- 
-    @Test
-    public void testDeleteLike() {
-        when(likeDAO.existsById(1)).thenReturn(true);
- 
-        ResponseEntity<?> response = likeService.deleteLike(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Like deleted", response.getBody());
- 
-        verify(likeDAO).deleteById(1);
-    }
- 
-    @Test
-    public void testDeleteLikesByPostId() {
-        when(likeDAO.existsByPost_PostId(1)).thenReturn(true);
- 
-        ResponseEntity<String> response = likeService.deleteLikesByPostId(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Likes for post deleted", response.getBody());
- 
-        verify(likeDAO).deleteByPost_PostId(1);
-    }
- 
-    @Test
-    public void testDeleteLikesByUserId() {
-        when(likeDAO.existsByUser_UserId(1)).thenReturn(true);
- 
-        ResponseEntity<String> response = likeService.deleteLikesByUserId(1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Likes by user deleted", response.getBody());
- 
-        verify(likeDAO).deleteByUser_UserId(1);
-    }
- 
-    @Test
-    public void testGetAllLikes_EmptyList() {
-        when(likeDAO.findAll()).thenReturn(Arrays.asList());
- 
-        assertThrows(LikesNotFoundException.class, () -> {
+        LikesNotFoundException exception = assertThrows(LikesNotFoundException.class, () -> {
             likeService.getAllLikes();
         });
-    }
  
-    @Test
-    public void testGetLikeById_NotFound() {
-        when(likeDAO.findById(1)).thenReturn(Optional.empty());
- 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            likeService.getLikeById(1);
-        });
-    }
- 
-    @Test
-    public void testGetLikesByPostId_NotFound() {
-        when(likeDAO.findByPostId(1)).thenReturn(Arrays.asList());
- 
-        assertThrows(LikesNotFoundException.class, () -> {
-            likeService.getLikesByPostId(1);
-        });
-    }
- 
-    @Test
-    public void testGetLikesByUserId_NotFound() {
-        when(likeDAO.findByUserId(1)).thenReturn(Arrays.asList());
- 
-        assertThrows(LikesNotFoundException.class, () -> {
-            likeService.getLikesByUserId(1);
-        });
-    }
- 
-    @Test
-    public void testDeleteLike_NotFound() {
-        when(likeDAO.existsById(1)).thenReturn(false);
- 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            likeService.deleteLike(1);
-        });
-    }
- 
-    @Test
-    public void testDeleteLikesByPostId_NotFound() {
-        when(likeDAO.existsByPost_PostId(1)).thenReturn(false);
- 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            likeService.deleteLikesByPostId(1);
-        });
-    }
- 
-    @Test
-    public void testDeleteLikesByUserId_NotFound() {
-        when(likeDAO.existsByUser_UserId(1)).thenReturn(false);
- 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            likeService.deleteLikesByUserId(1);
-        });
+        assertEquals("No likes found", exception.getMessage());
     }
     @Test
-    void testAddLike_NullLike() {
-        assertThrows(IllegalArgumentException.class, () -> likeService.addLike(null));
-    }
-    @Test
-    void testDeleteLike_InvalidId() {
-        int invalidLikeID = -1;
-        assertThrows(IllegalArgumentException.class, () -> likeService.deleteLike(invalidLikeID));
-    }
-    @Test
-    void testGetLikesByPostId_InvalidId() {
-        int invalidPostID = -1;
-        assertThrows(IllegalArgumentException.class, () -> likeService.getLikesByPostId(invalidPostID));
-    }
-    @Test
-    void testGetLikesByUserId_InvalidId() {
-        int invalidUserID = -1;
-        assertThrows(IllegalArgumentException.class, () -> likeService.getLikesByUserId(invalidUserID));
-    }
-    @Test
-    void testGetAllLikes_DatabaseException() {
-        when(likeDAO.findAll()).thenThrow(new RuntimeException("Database error"));
- 
-        assertThrows(RuntimeException.class, () -> likeService.getAllLikes());
-    }
-    @Test
-    void testGetLikeById_DatabaseException() {
+
+    void testGetLikeById() {
+
         int likeID = 1;
-        when(likeDAO.findById(likeID)).thenThrow(new RuntimeException("Database error"));
+
+        Likes like = new Likes();
  
-        assertThrows(RuntimeException.class, () -> likeService.getLikeById(likeID));
+        when(likesDAO.findById(likeID)).thenReturn(Optional.of(like));
+ 
+        ResponseEntity<?> response = likeService.getLikeById(likeID);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(like, response.getBody());
+
     }
+ 
+    @Test
+
+    void testGetLikeById_NotFound() {
+
+        int likeID = 1;
+ 
+        when(likesDAO.findById(likeID)).thenReturn(Optional.empty());
+ 
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+
+            likeService.getLikeById(likeID);
+
+        });
+ 
+        assertEquals("Like not found with ID: " + likeID, exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testGetLikesByPostId() {
+
+        int postID = 1;
+
+        Likes like = new Likes();
+
+        List<Likes> likesList = Arrays.asList(like);
+ 
+        when(likesDAO.findByPostId(postID)).thenReturn(likesList);
+ 
+        ResponseEntity<?> response = likeService.getLikesByPostId(postID);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(1, ((List<Likes>) response.getBody()).size());
+
+    }
+ 
+    @Test
+
+    void testGetLikesByPostId_InvalidPostId() {
+
+        int postID = -1;
+ 
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            likeService.getLikesByPostId(postID);
+
+        });
+ 
+        assertEquals("Invalid post ID", exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testGetLikesByPostId_NotFound() {
+
+        int postID = 1;
+ 
+        when(likesDAO.findByPostId(postID)).thenReturn(Collections.emptyList());
+ 
+        LikesNotFoundException exception = assertThrows(LikesNotFoundException.class, () -> {
+
+            likeService.getLikesByPostId(postID);
+
+        });
+ 
+        assertEquals("No likes found for post ID: " + postID, exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testGetLikesByUserId() {
+
+        int userID = 1;
+
+        Likes like = new Likes();
+
+        List<Likes> likesList = Arrays.asList(like);
+ 
+        when(likesDAO.findByUserId(userID)).thenReturn(likesList);
+ 
+        ResponseEntity<?> response = likeService.getLikesByUserId(userID);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(1, ((List<Likes>) response.getBody()).size());
+
+    }
+ 
+    @Test
+
+    void testGetLikesByUserId_InvalidUserId() {
+
+        int userID = -1;
+ 
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            likeService.getLikesByUserId(userID);
+
+        });
+ 
+        assertEquals("Invalid user ID", exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testGetLikesByUserId_NotFound() {
+
+        int userID = 1;
+ 
+        when(likesDAO.findByUserId(userID)).thenReturn(Collections.emptyList());
+ 
+        LikesNotFoundException exception = assertThrows(LikesNotFoundException.class, () -> {
+
+            likeService.getLikesByUserId(userID);
+
+        });
+ 
+        assertEquals("No likes found for user ID: " + userID, exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testAddLike_Overloaded() {
+
+        Likes like = new Likes();
+ 
+        ResponseEntity<?> response = likeService.addLike(like);
+ 
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        assertEquals("Like added", response.getBody());
+
+    }
+ 
+    @Test
+
+    void testAddLike_Overloaded_NullLike() {
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            likeService.addLike(null);
+
+        });
+ 
+        assertEquals("Like cannot be null", exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testDeleteLike() {
+
+        int likeID = 1;
+ 
+        when(likesDAO.existsById(likeID)).thenReturn(true);
+
+        doNothing().when(likesDAO).deleteById(likeID);
+ 
+        ResponseEntity<?> response = likeService.deleteLike(likeID);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals("Like deleted", response.getBody());
+
+    }
+
+    @Test
+
+    void testDeleteLike_InvalidLikeId() {
+
+        int likeID = -1;
+ 
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            likeService.deleteLike(likeID);
+
+        });
+ 
+        assertEquals("Invalid like ID", exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testDeleteLike_NotFound() {
+
+        int likeID = 1;
+ 
+        when(likesDAO.existsById(likeID)).thenReturn(false);
+ 
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+
+            likeService.deleteLike(likeID);
+
+        });
+ 
+        assertEquals("Like not found with ID: " + likeID, exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testDeleteLikesByPostId() {
+
+        int postId = 1;
+ 
+        when(likesDAO.existsByPost_PostId(postId)).thenReturn(true);
+
+        doNothing().when(likesDAO).deleteByPost_PostId(postId);
+ 
+        ResponseEntity<?> response = likeService.deleteLikesByPostId(postId);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+ 
+    @Test
+
+    void testDeleteLikesByPostId_InvalidPostId() {
+
+        int postId = -1;
+ 
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            likeService.deleteLikesByPostId(postId);
+
+        });
+ 
+        assertEquals("Invalid post ID", exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testDeleteLikesByPostId_NotFound() {
+
+        int postId = 1;
+ 
+        when(likesDAO.existsByPost_PostId(postId)).thenReturn(false);
+ 
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+
+            likeService.deleteLikesByPostId(postId);
+
+        });
+ 
+        assertEquals("Post not found with ID: " + postId, exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testDeleteLikesByUserId() {
+
+        int userID = 1;
+ 
+        when(likesDAO.existsByUser_UserId(userID)).thenReturn(true);
+
+        doNothing().when(likesDAO).deleteByUser_UserId(userID);
+ 
+        ResponseEntity<String> response = likeService.deleteLikesByUserId(userID);
+ 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals("Likes by user deleted", response.getBody());
+
+    }
+ 
+    @Test
+
+    void testDeleteLikesByUserId_InvalidUserId() {
+
+        int userID = -1;
+ 
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+
+            likeService.deleteLikesByUserId(userID);
+
+        });
+ 
+        assertEquals("Invalid user ID", exception.getMessage());
+
+    }
+ 
+    @Test
+
+    void testDeleteLikesByUserId_NotFound() {
+
+        int userID = 1;
+ 
+        when(likesDAO.existsByUser_UserId(userID)).thenReturn(false);
+ 
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+
+            likeService.deleteLikesByUserId(userID);
+
+        });
+ 
+        assertEquals("User not found with ID: " + userID, exception.getMessage());
+
+    }
+
 }
+ 
+    

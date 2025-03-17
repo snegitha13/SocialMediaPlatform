@@ -23,6 +23,7 @@ import com.model.Messages;
 import com.model.Notifications;
 import com.model.Posts;
 import com.model.Users;
+import com.service.FriendsService;
 import com.service.UsersService;
 
 @RestController
@@ -32,6 +33,9 @@ public class UsersController {
 	
 	@Autowired
 	UsersService service;
+	
+	@Autowired
+    private FriendsService friendsService;
 	
 	@GetMapping("/all")
     public ResponseEntity<List<Users>> getAllUsers() {
@@ -77,6 +81,13 @@ public class UsersController {
     public ResponseEntity<List<Friends>> getFriendsByUserId(@PathVariable int userId) {
         return service.getFriendsByUserId(userId);
     }
+
+    @PostMapping("/{userId}/friends/{friendId}")
+    public ResponseEntity<Friends> addFriend(@PathVariable int userId, @PathVariable int friendId) {
+        Friends friendship = friendsService.addFriend(userId, friendId);
+        return ResponseEntity.ok(friendship);
+    }
+    
 
     @GetMapping("/{userId}/friend-requests/pending")
     public ResponseEntity<List<Friends>> getPendingFriendRequests(@PathVariable int userId) {

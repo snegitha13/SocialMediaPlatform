@@ -45,53 +45,50 @@ public class MessageControllerTest {
         Messages message = new Messages();
         Messages createdMessage = new Messages();
         createdMessage.setMessage_text("Hello");
-
+ 
         when(messageService.createMessage(message)).thenReturn(createdMessage);
-
+ 
         ResponseEntity<Messages> response = messageController.createMessage(message);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(createdMessage, response.getBody());
     }
-    
     @Test
     public void testGetAllMessages() {
         List<Messages> messagesList = Arrays.asList(message);
         when(messageService.getAllMessages()).thenAnswer(invocation -> new ResponseEntity<>(messagesList, HttpStatus.OK));
- 
         ResponseEntity<List<Messages>> response = messageController.getAllMessages();
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(messagesList, response.getBody());
     }
- 
     @Test
     public void testGetMessageById() {
         when(messageService.getMessageById(1)).thenAnswer(invocation -> new ResponseEntity<>(message, HttpStatus.OK));
- 
         ResponseEntity<Messages> response = messageController.getMessageById(1);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(message, response.getBody());
     }
- 
     @Test
     public void testUpdateMessage() {
+        Messages message = new Messages();
+        message.setMessage_text("Updated Message");
         when(messageService.updateMessage(any(Integer.class), any(Messages.class))).thenAnswer(invocation -> new ResponseEntity<>(message, HttpStatus.OK));
  
-        ResponseEntity<?> response = messageController.updateMessage(1, message);
+        ResponseEntity<Messages> response = messageController.updateMessage(1, message);
+ 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(message, response.getBody());
     }
- 
     @Test
     public void testDeleteMessage() {
-        when(messageService.deleteMessage(1)).thenAnswer(invocation -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        when(messageService.deleteMessage(1)).thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
  
-        ResponseEntity<?> response = messageController.deleteMessage(1);
+        ResponseEntity<Messages> response = messageController.deleteMessage(1);
+ 
         assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
-    
 }

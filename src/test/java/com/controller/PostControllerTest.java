@@ -36,38 +36,33 @@ public class PostControllerTest {
     @Test
     public void testCreatePost() {
         when(postService.createPost(any(Posts.class))).thenAnswer(invocation -> new ResponseEntity<>(post, HttpStatus.CREATED));
- 
         ResponseEntity<?> response = postController.createPost(post);
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(post, response.getBody());
     }
- 
     @Test
     public void testGetPostById() {
         when(postService.getPostById(1)).thenAnswer(invocation -> new ResponseEntity<>(post, HttpStatus.OK));
- 
         ResponseEntity<?> response = postController.getPostById(1);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(post, response.getBody());
     }
- 
     @Test
     public void testUpdatePost() {
         when(postService.updatePost(any(Integer.class), any(Posts.class))).thenAnswer(invocation -> new ResponseEntity<>(post, HttpStatus.OK));
- 
         ResponseEntity<Posts> response = postController.updatePost(1, post);
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(post, response.getBody());
     }
- 
     @Test
     public void testDeletePost() {
-        when(postService.deletePost(1)).thenAnswer(invocation -> new ResponseEntity<>(HttpStatus.OK));
+        when(postService.deletePost(1)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
  
-        ResponseEntity<String> response = postController.deletePost(1);
+        ResponseEntity<Posts> response = postController.deletePost(1);
+ 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

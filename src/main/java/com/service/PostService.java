@@ -47,11 +47,11 @@ public class PostService {
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> deletePost(int postId) {
+    public ResponseEntity<Posts> deletePost(int postId) {
         Posts post = postDAO.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found for this id :: " + postId));
         postDAO.delete(post);
-        return new ResponseEntity<>("Post deleted",HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(post,HttpStatus.NO_CONTENT);
     }
 
    

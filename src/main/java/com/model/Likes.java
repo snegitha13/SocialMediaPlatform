@@ -18,8 +18,8 @@ public class Likes {
 	@GeneratedValue
 	private int likeID;
 	
-	@JsonIgnore
-	@JsonProperty
+//	@JsonIgnore
+//	@JsonProperty
 	@ManyToOne
     @JoinColumn(name = "postID")
 	private Posts post;

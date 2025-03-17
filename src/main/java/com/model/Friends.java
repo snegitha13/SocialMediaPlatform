@@ -26,12 +26,13 @@ public class Friends {
 	@JoinColumn(name = "userID1")
 	private Users userID1;
 	
-	@JsonIgnore
-	@JsonProperty
+//	@JsonIgnore
+//	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name = "userID2")
 	private Users userID2;
 	@Enumerated(EnumType.STRING)
+	
 	private Status status;
 	public enum Status {
 		pending,accepted;

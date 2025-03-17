@@ -39,23 +39,23 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createGroup(@RequestBody Groups group) {
+    public ResponseEntity<Groups> createGroup(@RequestBody Groups group) {
         return groupService.createGroup(group);
     }
 
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<String> updateGroup(@PathVariable int groupId, @RequestBody Groups groupDetails) {
+    public ResponseEntity<Groups> updateGroup(@PathVariable int groupId, @RequestBody Groups groupDetails) {
         return groupService.updateGroup(groupId, groupDetails);
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<String> deleteGroup(@PathVariable int groupId) {
+    public ResponseEntity<Groups> deleteGroup(@PathVariable int groupId) {
         return groupService.deleteGroup(groupId);
     }
 
     @DeleteMapping("/{groupId}/leave/{userId}")
-    public ResponseEntity<String> leaveGroup(@PathVariable int groupId, @PathVariable int userId) {
+    public ResponseEntity<Groups> leaveGroup(@PathVariable int groupId, @PathVariable int userId) {
         return groupService.leaveGroup(groupId, userId);
     }
 
@@ -70,8 +70,8 @@ public class GroupController {
     }
 
     @GetMapping("/{groupId}/messages")
-    public ResponseEntity<List<Object[]>> getMessagesWithUserAndGroup(@PathVariable int groupId) {
-        return groupService.getMessagesWithUserAndGroup(groupId);
+    public ResponseEntity<List<Object>> getCustomMessages(@PathVariable int groupId) {
+        return groupService.getCustomMessages(groupId);
     }
     
     @PostMapping("/{groupId}/messages/send/{userId}")

@@ -2,7 +2,9 @@ package com.model;
 
 import java.sql.Date;
 
- 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,10 +17,14 @@ public class Comments {
     @GeneratedValue
     private int commentId;
 
+    @JsonIgnore
+    @JsonProperty
     @ManyToOne
     @JoinColumn(name = "postId", nullable = false)
     private Posts postId;
 
+//    @JsonIgnore
+//    @JsonProperty
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users user;

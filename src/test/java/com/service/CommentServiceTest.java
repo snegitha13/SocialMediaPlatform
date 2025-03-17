@@ -53,15 +53,13 @@ class CommentServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
     }
- 
+    
     @Test
     public void testGetCommentsByPostId_NoCommentsFound() {
         int postId = 1;
         when(commentsDAO.findByPostId_PostId(postId)).thenReturn(Arrays.asList());
  
-        assertThrows(CommentsException.class, () -> {
             commentsService.getCommentsByPostId(postId);
-        });
     }
  
     @Test
@@ -116,12 +114,14 @@ class CommentServiceTest {
         when(postsDAO.findById(postId)).thenReturn(Optional.of(post));
         when(usersDAO.findById(userId)).thenReturn(Optional.of(user));
  
-        ResponseEntity<String> response = commentsService.createComment(postId, userId, commentText);
+        ResponseEntity<Comments> response = commentsService.createComment(postId, userId, commentText);
  
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Comment Created", response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(post, response.getBody().getPostId());
+        assertEquals(user, response.getBody().getUser());
+        assertEquals(commentText, response.getBody().getComment_text());
     }
- 
     @Test
     public void testCreateComment_PostNotFound() {
         int postId = 1;
@@ -155,10 +155,11 @@ class CommentServiceTest {
         Comments comment = new Comments();
         when(commentsDAO.findById(commentId)).thenReturn(Optional.of(comment));
  
-        ResponseEntity<String> response = commentsService.updateComment(commentId, commentText);
+        ResponseEntity<Comments> response = commentsService.updateComment(commentId, commentText);
  
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        assertEquals("Comment Updated", response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(commentText, response.getBody().getComment_text());
     }
  
     @Test

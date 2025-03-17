@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.model.Groups;
+import com.model.Messages;
 import com.model.Users;
 import com.service.GroupService;
 
@@ -66,49 +69,39 @@ class GroupControllerTest {
 	                .andExpect(status().isOk())
 	                .andExpect(jsonPath("$.groupId").value(group.getGroupId()));
 	    }
-	 
 	    @Test
 	    public void testCreateGroup() throws Exception {
 	        Groups group = new Groups();
 	        group.setGroupName("Test Group");
-	        when(groupService.createGroup(any(Groups.class))).thenReturn(new ResponseEntity<>("Group Created", HttpStatus.CREATED));
-	 
+	        when(groupService.createGroup(any(Groups.class))).thenReturn(new ResponseEntity<>(group, HttpStatus.CREATED));
 	        mockMvc.perform(post("/api/groups")
 	                .contentType("application/json")
 	                .content("{\"groupName\":\"Test Group\"}"))
-	                .andExpect(status().isCreated())
-	                .andExpect(content().string("Group Created"));
+	                .andExpect(status().isCreated());
 	    }
-	 
 	    @Test
 	    public void testUpdateGroup() throws Exception {
 	        Groups group = new Groups();
 	        group.setGroupName("Updated Group");
-	        when(groupService.updateGroup(eq(1), any(Groups.class))).thenReturn(new ResponseEntity<>("Group Updated", HttpStatus.ACCEPTED));
-	 
+	        when(groupService.updateGroup(eq(1), any(Groups.class))).thenReturn(new ResponseEntity<>(group, HttpStatus.ACCEPTED));
 	        mockMvc.perform(put("/api/groups/1")
 	                .contentType("application/json")
 	                .content("{\"groupName\":\"Updated Group\"}"))
-	                .andExpect(status().isAccepted())
-	                .andExpect(content().string("Group Updated"));
+	                .andExpect(status().isAccepted());
 	    }
-	 
 	    @Test
 	    public void testDeleteGroup() throws Exception {
-	        when(groupService.deleteGroup(1)).thenReturn(new ResponseEntity<>("Group Deleted", HttpStatus.ACCEPTED));
-	 
+	        when(groupService.deleteGroup(1)).thenReturn(new ResponseEntity<>( HttpStatus.ACCEPTED));
 	        mockMvc.perform(delete("/api/groups/1"))
-	                .andExpect(status().isAccepted())
-	                .andExpect(content().string("Group Deleted"));
+	                .andExpect(status().isAccepted());
 	    }
 	 
 	    @Test
 	    public void testLeaveGroup() throws Exception {
-	        when(groupService.leaveGroup(1, 1)).thenReturn(new ResponseEntity<>("User Left Group", HttpStatus.ACCEPTED));
+	        when(groupService.leaveGroup(1, 1)).thenReturn(new ResponseEntity<>( HttpStatus.ACCEPTED));
 	 
 	        mockMvc.perform(delete("/api/groups/1/leave/1"))
-	                .andExpect(status().isAccepted())
-	                .andExpect(content().string("User Left Group"));
+	                .andExpect(status().isAccepted());
 	    }
 	 
 	    @Test
@@ -131,13 +124,28 @@ class GroupControllerTest {
 	    }
 	 
 	    @Test
-	    public void testGetMessagesWithUserAndGroup() throws Exception {
-	        List<Object[]> messages = Collections.emptyList();
-	        when(groupService.getMessagesWithUserAndGroup(1)).thenReturn(new ResponseEntity<>(messages, HttpStatus.OK));
-	 
+	    public void getCustomMessages() throws Exception {
+	        List<Object> messages = new ArrayList<>();
+	        Messages message1 = new Messages();
+	        message1.setMessageId(1);
+	        message1.setMessage_text("Test message 1");
+	        message1.setTimestamp(new Timestamp(System.currentTimeMillis()));
+	        message1.setSender(new Users());
+	        message1.setReceiver(new Users());
+	        Messages message2 = new Messages();
+	        message2.setMessageId(2);
+	        message2.setMessage_text("Test message 2");
+	        message2.setTimestamp(new Timestamp(System.currentTimeMillis()));
+	        message2.setSender(new Users());
+	        message2.setReceiver(new Users());
+	        messages.add(message1);
+	        messages.add(message2);
+	        when(groupService.getCustomMessages(1)).thenReturn(new ResponseEntity<>(messages, HttpStatus.OK));
 	        mockMvc.perform(get("/api/groups/1/messages"))
 	                .andExpect(status().isOk())
-	                .andExpect(jsonPath("$.length()").value(messages.size()));
+	                .andExpect(jsonPath("$.length()").value(messages.size()))
+	                .andExpect(jsonPath("$[0].message_text").value("Test message 1"))
+	                .andExpect(jsonPath("$[1].message_text").value("Test message 2"));
 	    }
 	 
 	    @Test

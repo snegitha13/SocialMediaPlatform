@@ -70,7 +70,7 @@ public class FriendsService {
         );
     }
  
-    public ResponseEntity<String> sendMessage(int friendshipId, String messageText) {
+    public ResponseEntity<Messages> sendMessage(int friendshipId, String messageText) {
     	if (messageText == null || messageText.trim().isEmpty()) {
             throw new IllegalArgumentException("Message cannot be empty or null");
         }
@@ -88,6 +88,6 @@ public class FriendsService {
         message.setMessage_text(messageText);
         message.setTimestamp(new Timestamp(System.currentTimeMillis()));
         messageRepository.save(message);
-        return ResponseEntity.ok("Message sent successfully");
+        return ResponseEntity.ok(message);
     }
 }

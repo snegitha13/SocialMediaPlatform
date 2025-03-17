@@ -67,7 +67,6 @@ public class UsersService {
         }
     }
 	
-
     public ResponseEntity<?> registerAdmin(Users user) {
         // Encode the password before saving the user
         user.setPassword(passwordEncoder.encode(user.getPassword()));

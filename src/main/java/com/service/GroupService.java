@@ -43,39 +43,39 @@ public class GroupService {
         return new ResponseEntity<>(group, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> createGroup(Groups group) {
+    public ResponseEntity<Groups> createGroup(Groups group) {
         Users admin = userDAO.findById(group.getAdmin().getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("Admin user not found with id: " + group.getAdmin().getUserId()));
         group.setAdmin(admin);
         groupDAO.save(group);
-        return new ResponseEntity<>("Group Created", HttpStatus.CREATED);
+        return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> updateGroup(int groupId, Groups groupDetails) {
+    public ResponseEntity<Groups> updateGroup(int groupId, Groups groupDetails) {
         Groups group = groupDAO.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + groupId));
         group.setGroupName(groupDetails.getGroupName());
         groupDAO.save(group);
-        return new ResponseEntity<>("Group Updated", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(group, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<String> deleteGroup(int groupId) {
+    public ResponseEntity<Groups> deleteGroup(int groupId) {
         if (groupDAO.existsById(groupId)) {
             groupDAO.deleteById(groupId);
-            return new ResponseEntity<>("Group Deleted", HttpStatus.ACCEPTED);
+            return new ResponseEntity<>( HttpStatus.ACCEPTED);
         } else {
             throw new ResourceNotFoundException("Group not found with id: " + groupId);
         }
     }
 
-    public ResponseEntity<String> leaveGroup(int groupId, int userId) {
+    public ResponseEntity<Groups> leaveGroup(int groupId, int userId) {
         Groups group = groupDAO.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + groupId));
         Users user = userDAO.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         group.getMembers().remove(user);
         groupDAO.save(group);
-        return new ResponseEntity<>("User Left Group", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(group, HttpStatus.ACCEPTED);
     }
 
     public ResponseEntity<String> joinGroup(int groupId, int userId) {
@@ -97,14 +97,16 @@ public class GroupService {
         }
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
+    
+    public ResponseEntity<List<Object>> getCustomMessages(long groupId)
+    {
+    	List<Object> messages=messageDAO.getCustomMessages(groupId);
+    			if (messages.isEmpty()) {
+  	            throw new NoDataFoundException("No messages found for group with id: " + groupId);
+  	        }
+   	        return new ResponseEntity<>(messages, HttpStatus.OK);  	  
+   	 }
 
-    public ResponseEntity<List<Object[]>> getMessagesWithUserAndGroup(int groupId) {
-        List<Object[]> messages = groupDAO.getMessagesWithUserAndGroup(groupId);
-        if (messages.isEmpty()) {
-            throw new NoDataFoundException("No messages found for group with id: " + groupId);
-        }
-        return new ResponseEntity<>(messages, HttpStatus.OK);
-    }
 
     public ResponseEntity<String> sendMessageToGroup(int groupId, int userId, String messageText) {
         Groups group = groupDAO.findById(groupId)

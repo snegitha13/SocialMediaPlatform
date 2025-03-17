@@ -33,12 +33,12 @@ public class CommentController {
     }
 	
 	@PostMapping("/comments")
-    public ResponseEntity<String> createComment(@RequestBody Comments commentDetails) {
+    public ResponseEntity<Comments> createComment(@RequestBody Comments commentDetails) {
         return service.createComment(commentDetails.getPostId().getPostId(), commentDetails.getUser().getUserId(), commentDetails.getComment_text());
     }
 	
 	@PostMapping("/posts/{postId}/comments")
-	 public ResponseEntity<String> addCommentToPost(@PathVariable int postId, @RequestBody Comments commentDetails) {
+	 public ResponseEntity<Comments> addCommentToPost(@PathVariable int postId, @RequestBody Comments commentDetails) {
 	        return service.createComment(postId, commentDetails.getUser().getUserId(), commentDetails.getComment_text());
 	  }
 
@@ -53,7 +53,7 @@ public class CommentController {
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<String> updateComment(@PathVariable int commentId, @RequestBody Comments commentDetails) {
+    public ResponseEntity<Comments> updateComment(@PathVariable int commentId, @RequestBody Comments commentDetails) {
         return service.updateComment(commentId, commentDetails.getComment_text());
     }
 

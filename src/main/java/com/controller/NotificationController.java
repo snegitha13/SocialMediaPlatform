@@ -23,11 +23,13 @@ public class NotificationController {
 
     @PutMapping("/mark-read/{notificationId}")
     public Notifications markNotificationAsRead(@PathVariable int notificationId) {
+   
         return service.markNotificationAsRead(notificationId);
     }
 
     @DeleteMapping("/delete/{notificationId}")
     public void deleteNotification(@PathVariable int notificationId) {
+    	System.out.println(notificationId);
         service.deleteNotification(notificationId);
     }
 }

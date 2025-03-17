@@ -115,13 +115,13 @@ public class LikeService {
             throw new ResourceNotFoundException("Like not found with ID: " + likeID);
         }
     }
-    public ResponseEntity<String> deleteLikesByPostId(int postId) {
+    public ResponseEntity<Likes> deleteLikesByPostId(int postId) {
     	if (postId <= 0) {
             throw new IllegalArgumentException("Invalid post ID");
         }
     	if (likesDAO.existsByPost_PostId(postId)) {
             likesDAO.deleteByPost_PostId(postId);
-            return ResponseEntity.ok("Likes for post deleted");
+            return ResponseEntity.ok().build();
         } else {
             throw new ResourceNotFoundException("Post not found with ID: " + postId);
         }

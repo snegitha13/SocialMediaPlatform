@@ -102,7 +102,6 @@ public class Users {
 		return roles;
 	}
 
-
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
@@ -111,76 +110,61 @@ public class Users {
 		return userId;
 	}
 
-
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-
 
 	public String getUserName() {
 		return userName;
 	}
 
-
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 	public String getEmail() {
 		return email;
 	}
 
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 
 	public byte[] getProfilePicture() {
 		return profilePicture;
 	}
 
-
 	public void setProfilePicture(byte[] profilePicture) {
 		this.profilePicture = profilePicture;
 	}
-
 
 	public List<Posts> getPosts() {
 		return posts;
 	}
 
-
 	public void setPosts(List<Posts> posts) {
 		this.posts = posts;
 	}
-
 
 	public List<Comments> getComments() {
 		return comments;
 	}
 
-
 	public void setComments(List<Comments> comments) {
 		this.comments = comments;
 	}
 
-
 	public List<Likes> getLikes() {
 		return likes;
 	}
-
 
 	public void setLikes(List<Likes> likes) {
 		this.likes = likes;
@@ -191,56 +175,45 @@ public class Users {
 		return friends1;
 	}
 
-
 	public void setFriends1(List<Friends> friends1) {
 		this.friends1 = friends1;
 	}
-
 
 	public List<Friends> getFriends2() {
 		return friends2;
 	}
 
-
 	public void setFriends2(List<Friends> friends2) {
 		this.friends2 = friends2;
 	}
-
 
 	public List<Messages> getSentMessages() {
 		return sentMessages;
 	}
 
-
 	public void setSentMessages(List<Messages> sentMessages) {
 		this.sentMessages = sentMessages;
 	}
-
 
 	public List<Messages> getReceivedMessages() {
 		return receivedMessages;
 	}
 
-
 	public void setReceivedMessages(List<Messages> receivedMessages) {
 		this.receivedMessages = receivedMessages;
 	}
-
 
 	public List<Notifications> getNotifications() {
 		return notifications;
 	}
 
-
 	public void setNotifications(List<Notifications> notifications) {
 		this.notifications = notifications;
 	}
 
-
 	public List<Groups> getGroups() {
 		return groups;
 	}
-
 
 	public void setGroups(List<Groups> groups) {
 		this.groups = groups;
